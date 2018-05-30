@@ -1,14 +1,24 @@
 
 const router = require('express').Router();
+const passport = require('passport');
 
-const { authRouter } = require('./auth');
-const { storiesRouter } = require('./stories');
-const { userRouter } = require('./user');
+const localStrategy = require('../passport/local');
+const jwtStrategy = require('../passport/jwt');
 
-//Use as the root router for application server
+const authRouter = require('./auth');
+const storiesRouter = require('./stories');
+const userRouter = require('./user');
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+//Configure for auth
+const jwtAuth = passport.authenticate('jwt', {session: false});
 
 router.use('/auth', authRouter);
-router.use('/stories', storiesRouter);
 router.use('/users', userRouter);
 
-module.exports = { router };
+router.use('/stories', jwtAuth, storiesRouter);
+
+//Use as the root router for application server
+module.exports = router;

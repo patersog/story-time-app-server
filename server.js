@@ -1,10 +1,12 @@
+require('dotenv').config();
+
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
-const { router: apiRouter } = require('./routes');
+const apiRouter = require('./routes');
 
 const app = express();
 
@@ -27,7 +29,7 @@ app.use('/api', apiRouter);
 //404 error handler
 app.use((req, res, next) => {
 	const err = new Error('Not Found');
-	err.status = 400;
+	err.status = 404;
 	next(err);
 });
 
