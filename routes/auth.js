@@ -1,10 +1,12 @@
 
 const router = require('express').Router();
 const passport = require('passport');
-const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+
 const config = require('../config');
 
+const localAuth = passport.authenticate('local', {session: false});
+const jwtAuth = passport.authenticate('jwt', {session: false});
 
 const createAuthToken = function(user) {
 	return jwt.sign({user}, config.JWT_SECRET, {
@@ -14,14 +16,10 @@ const createAuthToken = function(user) {
 	});
 };
 
-//TODO make a basic request from a router
-const localAuth = passport.authenticate('local', {session: false});
 router.post('/login', localAuth, (req, res) => {
 	const authToken = createAuthToken(req.user);
 	res.json({authToken});
 });
-
-const jwtAuth = passport.authenticate('jwt', {session: false});
 
 router.post('/refresh', jwtAuth, (req, res) => {
 	const authToken = createAuthToken(req.user);

@@ -3,7 +3,6 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 
 const jsonParser = bodyParser.json();
-
 const knex = require('../bookshelf');
 const { hashPassword } = require('../bookshelf/utils');
 
@@ -98,10 +97,10 @@ router.post('/', jsonParser, (req, res, next) => {
 	lastName = lastName.trim();
 
 	return knex('users')
-		.count()
+		.select('username')
 		.where('username', username)
-		.then(count => {
-			if(count > 0) {
+		.then(result => {
+			if(result.length > 0) {
 				//There is an existing user with the same username
 				return Promise.reject({
 					code: 422,

@@ -7,6 +7,11 @@ const passport = require('passport');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const apiRouter = require('./routes');
+const localStrategy = require('./passport/local');
+const jwtStrategy = require('./passport/jwt');
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 const app = express();
 
