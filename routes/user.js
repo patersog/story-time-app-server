@@ -122,6 +122,7 @@ router.post('/', jsonParser, (req, res, next) => {
 				},['username', 'firstname', 'lastname']);
 		})
 		.then(user => {
+			console.log('user',user);
 			return res.status(201).json(user[0]);
 		})
 		.catch(err => {

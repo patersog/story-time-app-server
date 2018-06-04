@@ -10,6 +10,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
 		.where({'username': username})
 		.then(result => {
 			user = result[0];
+			console.log(user);
 			if(!user) {
 				return Promise.reject({
 					reason: 'LoginError',
@@ -35,7 +36,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
 				return done(err);
 			}
 			return done(err);
-		})
+		});
 });
 
 module.exports = localStrategy;
