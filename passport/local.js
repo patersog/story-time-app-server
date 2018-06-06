@@ -1,5 +1,5 @@
-const { Strategy: LocalStrategy } = require('passport-local');
 
+const { Strategy: LocalStrategy } = require('passport-local');
 const knex = require('../bookshelf');
 const { validatePassword } = require('../bookshelf/utils');
 
