@@ -1,4 +1,5 @@
 require('dotenv').config({path:'../.env'});
+console.log(process.env.NODE_ENV);
 module.exports = {
 	development: {
 		client: 'pg',
@@ -8,7 +9,8 @@ module.exports = {
 	},
 	test: {
 		client: 'pg',
-		connection: process.env.TEST_DATABASE_URL_PG || 'postgres://localhost/story-time-test',
+		connection: process.env.TEST_DATABASE_URL_PG || 'postgres://localhost/story-time-app-test',
+		debug: false,
 		pool: {min : 1 , max : 2}
 	},
 	production: {

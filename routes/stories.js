@@ -21,7 +21,6 @@ router.get('/', (req, res, next) => {
 		.select('stories.id', 'stories.uid as uid', 'stories.updated_at', 'stories.created_at', 'title','text',
 			'users.username as username')
 		.leftJoin('users', 'stories.uid', 'users.id')
-		.limit(10)
 		.orderBy('stories.updated_at')
 		// add queryBuilder for selecting genres titles
 		.then(results => {
