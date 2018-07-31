@@ -1,19 +1,13 @@
 
 const knex = require('../');
 const faker = require('faker');
-// const { hashPassword } = require('../bookshelf/utils');
-
-// const USER_TOTAL = 30;
-// const STORY_TOTAL = 50;
 
 // password for testing: 'password10'
 // hash of password for testing: '$2a$10$tZ.k8k41b9OjHDN.U/DHWuz7OUjPW8sX0zGytKzndhaIl/rJQMihe'
 
 //Drop stories Table
 
-//console.log(knex);
-
-module.exports = function(USER_TOTAL, STORY_TOTAL) {
+module.exports = function(USER_TOTAL = 30, STORY_TOTAL = 50) {
 
 	return knex.schema.dropTableIfExists('stories')
 		.then(() => {
