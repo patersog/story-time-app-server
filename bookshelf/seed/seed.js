@@ -2,8 +2,8 @@
 const knex = require('../');
 const faker = require('faker');
 
-USER_TOTAL = 20;
-STORY_TOTAL = 50;
+const USER_TOTAL = 20;
+const STORY_TOTAL = 50;
 
 knex.schema.dropTableIfExists('stories')
 	.then(() => {

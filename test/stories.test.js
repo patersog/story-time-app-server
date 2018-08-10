@@ -11,36 +11,6 @@ const seedData = require('../bookshelf/seed/seed-database');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-
-describe('Reality Check', () => {
-	it('true should be true', () => {
-		expect(true).to.be.true;
-	});
-});
-
-describe('Environment', () => {
-	it('NODE_ENV should be "test"', () => {
-		expect(process.env.NODE_ENV).to.equal('test');
-	});
-
-	it('connection should be test database', () => {
-		expect(knex.client.connectionSettings.database).to.equal('fqvudtjd'); // The "remote" test database
-	});
-});
-
-describe('Basic Express setup', () => {
-	describe('404 handler', () => {
-		it('should respond with 404 when given a bad path', () => {
-			return chai.request(app)
-				.get('/bad/path')
-				.catch(err => err.response)
-				.then(res => {
-					expect(res).to.have.status(404);
-				});
-		});
-	});
-});
-
 describe('Storytime API', () => {
 	/** Configure amounts */
 	const USER_TOTAL = 30;
@@ -54,60 +24,54 @@ describe('Storytime API', () => {
 		return knex.destroy();
 	});
 
-	// describe('GET /api/stories', () => {
-	// 	it('should return the stories', () => {
-	// 		let count;
-	// 		return knex('stories')
-	// 			.count()
-	// 			.then(([result]) => {
-	// 				count = Number(result.count);
-	// 				return chai.request(app).get('/api/stories');
-	// 			})
-	// 			.then(res => {
-	// 				expect(res).to.have.status(200);
-	// 				expect(res).to.be.json;
-	// 				expect(res.body).to.be.a('array');
-	// 				expect(res.body).to.have.length(count);
-	// 			});
-	// 	});
+	describe('GET /api/stories', () => {
+		it('should return 20 stories', () => {
 
-	// 	it('should return a list with the correct fields', function () {
-	// 		return chai.request(app)
-	// 			.get('/api/stories')
-	// 			.then(function (res) {
-	// 				expect(res).to.have.status(200);
-	// 				expect(res).to.be.json;
-	// 				expect(res.body).to.be.a('array');
-	// 				res.body.forEach(function (item) {
-	// 					expect(item).to.be.a('object');
-	// 					expect(item).to.include.keys('id', 'uid', 'title', 'text', 'created_at', 'updated_at');
-	// 				});
-	// 			});
-	// 	});
-	// });
+			return chai.request(app).get('/api/stories')
+				.then(res => {
+					expect(res).to.have.status(200);
+					expect(res).to.be.json;
+					expect(res.body).to.be.a('array');
+					expect(res.body).to.have.length(20);
+				});
+		});
+
+		it('should return a list with the correct fields', function () {
+			return chai.request(app)
+				.get('/api/stories')
+				.then(function (res) {
+					expect(res).to.have.status(200);
+					expect(res).to.be.json;
+					expect(res.body).to.be.a('array');
+					res.body.forEach(function (item) {
+						expect(item).to.be.a('object');
+						expect(item).to.include.keys('id', 'uid', 'title', 'text', 'created_at', 'updated_at');
+					});
+				});
+		});
+	});
 
 	describe('GET /api/stories/:id', () => {
 		it('should return the correct story', () => {
-			let data,api;
-
+			let data;
 			return knex('stories')
 				.first()
+				.then(_data => {
+					data = _data;
+				})
+				.then(() => {
+					return chai.request(app)
+						.get(`/api/stories/${data.id}`);
+				})
 				.then(res => {
-					console.log(res);
+					expect(res).to.have.status(200);
+					expect(res).to.be.json;
+					expect(res.body).to.be.an('object');
+					expect(res.body).to.include.keys('id', 'uid', 'title', 'text', 'updated_at', 'created_at','username');
+					expect(res.body.id).to.equal(data.id);
+					expect(res.body.uid).to.equal(data.uid);
+					expect(res.body.title).to.equal(data.title);
 				});
-
-			// const apiPromise = chai.request(app)
-			// 	.get('/api/stories/1000');
-
-			// return Promise.all([dataPromise, apiPromise])
-			// 	.then(function ([data, res]) {
-			// 		expect(res).to.have.status(200);
-			// 		expect(res).to.be.json;
-			// 		expect(res.body).to.be.an('object');
-			// 		expect(res.body).to.include.keys('id', 'title', 'content');
-			// 		expect(res.body.id).to.equal(1000);
-			// 		expect(res.body.title).to.equal(data.title);
-			// 	});
 		});
 
 		it('should respond with a 404 for an invalid id', function () {

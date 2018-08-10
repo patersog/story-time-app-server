@@ -3,7 +3,7 @@ module.exports = {
 	development: {
 		client: 'pg',
 		connection: process.env.DATABASE_URL_PG || 'postgres://localhost/story-time-app',
-		debug: true, // http://knexjs.org/#Installation-debug
+		debug: false, // http://knexjs.org/#Installation-debug
 		pool: { min: 3, max: 5 }
 	},
 	test: {

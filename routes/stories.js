@@ -8,6 +8,7 @@ const knex = require('../bookshelf');
 const jwtAuth = passport.authenticate('jwt', {session: false});
 const jsonParser = bodyParser.json();
 
+//Get the most 20 recent stories currently on the site
 router.get('/', (req, res, next) => {
 
 	/** FOR DEBUGGING
@@ -16,17 +17,23 @@ router.get('/', (req, res, next) => {
 	 * console.log(message);
 	 */
 
-	//TODO: Add pagination and query selectors
+	/**
+	 * TODO:
+	 * 	Add pagination and query selectors.
+	 * 	Pre-processing for text formating
+	 */
 	knex('stories')
 		.select('stories.id', 'stories.uid as uid', 'stories.updated_at', 'stories.created_at', 'title','text',
 			'users.username as username')
 		.leftJoin('users', 'stories.uid', 'users.id')
-		.orderBy('stories.updated_at')
+		.orderBy('stories.updated_at','desc')
+		.limit(20)
 		// add queryBuilder for selecting genres titles
+		.returning(['id','uid','title','text', 'created_at', 'updated_at'])
 		.then(results => {
-			console.log(results);
 			if(!results) {
-				console.log('oh no, there was an error');
+				// console.log('oh no, there was an error');
+				next(new Error('Something went wrong...'));
 			}
 			res.json(results);
 		})
@@ -35,6 +42,7 @@ router.get('/', (req, res, next) => {
 		});
 });
 
+//get one story
 router.get('/:id', (req, res, next) => {
 	const { id } = req.params;
 
@@ -50,9 +58,8 @@ router.get('/:id', (req, res, next) => {
 		.where('stories.id', id)
 		.leftJoin('users', 'stories.uid', 'users.id')
 		.then(result => {
-			// console.log('FETCH_STORY', result);
 			if(!result) {
-				console.log('oh no, there was an error');
+				next(new Error('Something went wrong...'));
 			}
 			res.json(result[0]);
 		})
@@ -61,10 +68,10 @@ router.get('/:id', (req, res, next) => {
 		});
 });
 
+//create one story
 router.post('/', [jwtAuth, jsonParser], (req, res, next) => {
 
 	const {
-		//username,
 		id
 	} = req.user;
 
@@ -101,11 +108,11 @@ router.post('/', [jwtAuth, jsonParser], (req, res, next) => {
 
 	knex('stories')
 		.insert( newStory, ['id','uid','title','text', 'created_at', 'updated_at'])
-		
+
 		.then(result => {
 			if(!result) {
 				//TODO: Add more descriptive Errors
-				console.log('oh no, there was an error');
+				next(new Error('Something went wrong...'));
 			}
 			return result;
 		})
@@ -116,6 +123,7 @@ router.post('/', [jwtAuth, jsonParser], (req, res, next) => {
 		.catch(next);
 });
 
+//update one story
 router.put('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 
 	const { id } = req.user;
@@ -138,6 +146,7 @@ router.put('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 	const updateObj = {
 		title,
 		text,
+		updated_at : knex.fn.now()
 	};
 
 	/** FOR DEBUGGING
@@ -147,20 +156,49 @@ router.put('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 	 */
 
 	knex('stories')
-	.update(updateObj, ['id','uid','title','text', 'created_at', 'updated_at'])
-	.where({'id': storyId, 'uid': id})
-	.then(result => {
-		if(!result) {
+		.update(updateObj, ['id','uid','title','text', 'created_at', 'updated_at'])
+		.where({'id': storyId, 'uid': id})
+		.then(result => {
+			console.log(result);
+			if(!result) {
 			//TODO: Add more descriptive Errors
-			console.log('oh no, there was an error');
-		}
-		return result;
-	})
-	.then(result => {
-		console.log(result);
-		res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
-	})
-	.catch(next);
+				next(new Error('Something went wrong...'));
+			}
+			return result;
+		})
+		.then(result => {
+			console.log(result);
+			res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
+		})
+		.catch(next);
+
+});
+
+//delete one story
+router.delete('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
+
+	const { id } = req.user;
+	const { storyId } = req.params;
+
+	/** FOR DEBUGGING
+	 * const username = req.user;
+	 * const message = `DELETE request from "${username}"`;
+	 * console.log(message);
+	 */
+
+	knex('stories')
+		.where({'id': storyId, 'uid': id})
+		.del(['id','uid'])
+		.then(result => {
+			if(!result) {
+				next(new Error('Something went wrong...'));
+			}
+			return result;
+		})
+		.then(result => {
+			res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
+		})
+		.catch(next);
 
 });
 

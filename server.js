@@ -3,13 +3,17 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const passport = require('passport');
 
+//configuration
 const { PORT, CLIENT_ORIGIN } = require('./config');
+
+//API routes
 const apiRouter = require('./routes');
+
+//Passport setup
+const passport = require('passport');
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');
-
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
@@ -21,13 +25,14 @@ app.use(morgan(process.env.NODE_ENV !== 'development'? 'common':'dev', {
 
 app.use(express.json());
 
+//Provide CORS support
 app.use(
 	cors({
 		origin: CLIENT_ORIGIN
 	})
 );
 
-//Routers
+//Router
 app.use('/api', apiRouter);
 
 
