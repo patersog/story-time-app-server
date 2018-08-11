@@ -3,7 +3,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const knex = require('../bookshelf');
 
-const seedData = require('../bookshelf/seed/seed-database');
+const {seed} = require('../bookshelf/seed/seed-database');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -28,7 +28,7 @@ describe('Testing Seed', () => {
 	const USER_TOTAL = 1;
 	const STORY_TOTAL = 1;
 	it('should seed data', () => {
-		return seedData(USER_TOTAL, STORY_TOTAL)
+		return seed(USER_TOTAL, STORY_TOTAL)
 			.then(() => {
 				const users = knex('users');
 				const stories = knex('stories');

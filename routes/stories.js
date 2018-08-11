@@ -31,20 +31,18 @@ router.get('/', (req, res, next) => {
 		// add queryBuilder for selecting genres titles
 		.returning(['id','uid','title','text', 'created_at', 'updated_at'])
 		.then(results => {
-			if(!results) {
-				// console.log('oh no, there was an error');
-				next(new Error('Something went wrong...'));
+			if(results) {
+				res.json(results);
+			} else {
+				next();
 			}
-			res.json(results);
 		})
-		.catch(err => {
-			next(err);
-		});
+		.catch(next);
 });
 
 //get one story
-router.get('/:id', (req, res, next) => {
-	const { id } = req.params;
+router.get('/:storyId', (req, res, next) => {
+	const { storyId } = req.params;
 
 	/** FOR DEBUGGING
 	 * const username  = req.user ? req.user : 'guest';
@@ -52,20 +50,25 @@ router.get('/:id', (req, res, next) => {
 	 * console.log(message);
 	 */
 
+	if(isNaN(storyId)) {
+		const err = new Error('Bad Request');
+		err.status = 400;
+		next(err);
+	}
+
 	knex('stories')
 		.select('stories.id', 'stories.uid as uid', 'stories.updated_at', 'stories.created_at', 'title','text',
 			'users.username as username')
-		.where('stories.id', id)
+		.where('stories.id', storyId)
 		.leftJoin('users', 'stories.uid', 'users.id')
 		.then(result => {
-			if(!result) {
-				next(new Error('Something went wrong...'));
+			if(result.length > 0) {
+				res.json(result[0]);
+			} else {
+				next();
 			}
-			res.json(result[0]);
 		})
-		.catch(err => {
-			next(err);
-		});
+		.catch(next);
 });
 
 //create one story
@@ -108,17 +111,13 @@ router.post('/', [jwtAuth, jsonParser], (req, res, next) => {
 
 	knex('stories')
 		.insert( newStory, ['id','uid','title','text', 'created_at', 'updated_at'])
-
 		.then(result => {
-			if(!result) {
-				//TODO: Add more descriptive Errors
-				next(new Error('Something went wrong...'));
+			if(result.length > 0) {
+				storyId = result.id;
+				res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
+			} else {
+				next();
 			}
-			return result;
-		})
-		.then(result => {
-			storyId = result.id;
-			res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
 		})
 		.catch(next);
 });
@@ -130,6 +129,11 @@ router.put('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 	const { title, text } = req.body;
 	const { storyId } = req.params;
 
+	if(isNaN(storyId)) {
+		const err = new Error('Bad Request');
+		err.status = 400;
+		next(err);
+	}
 	// TODO: write a dynamic field validator
 	if (!title) {
 		const err = new Error('Missing `title` in request body');
@@ -155,20 +159,15 @@ router.put('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 	 * console.log(message);
 	 */
 
-	knex('stories')
+	return knex('stories')
 		.update(updateObj, ['id','uid','title','text', 'created_at', 'updated_at'])
 		.where({'id': storyId, 'uid': id})
 		.then(result => {
-			console.log(result);
-			if(!result) {
-			//TODO: Add more descriptive Errors
-				next(new Error('Something went wrong...'));
+			if(result.length > 0) {
+				res.location(`${req.originalUrl}`).status(201).json(result[0]);
+			} else {
+				next();
 			}
-			return result;
-		})
-		.then(result => {
-			console.log(result);
-			res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
 		})
 		.catch(next);
 
@@ -186,17 +185,21 @@ router.delete('/:storyId', [jwtAuth, jsonParser], (req, res, next) => {
 	 * console.log(message);
 	 */
 
-	knex('stories')
+	if(isNaN(storyId)) {
+		const err = new Error('Bad Request');
+		err.status = 400;
+		next(err);
+	}
+
+	return knex('stories')
 		.where({'id': storyId, 'uid': id})
 		.del(['id','uid'])
 		.then(result => {
-			if(!result) {
-				next(new Error('Something went wrong...'));
+			if(result.length > 0) {
+				res.location(`${req.originalUrl}`).status(204).json(result[0]);
+			} else {
+				next();
 			}
-			return result;
-		})
-		.then(result => {
-			res.location(`${req.originalUrl}/${storyId}`).status(201).json(result[0]);
 		})
 		.catch(next);
 

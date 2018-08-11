@@ -5,15 +5,9 @@ const faker = require('faker');
 // password for testing: 'password10'
 // hash of password for testing: '$2a$10$tZ.k8k41b9OjHDN.U/DHWuz7OUjPW8sX0zGytKzndhaIl/rJQMihe'
 
-//Drop stories Table
-
-module.exports = function(USER_TOTAL = 30, STORY_TOTAL = 50) {
-
-	return knex.schema.dropTableIfExists('stories')
-		.then(() => {
-			//Drop users Table
-			return knex.schema.dropTableIfExists('users');
-		})
+const seed = function(USER_TOTAL = 30, STORY_TOTAL = 50) {
+	//Drop stories Table
+	return dropTables()
 		.then(() => {
 			//Create users Table
 			return knex.schema.createTable('users', (t) => {
@@ -75,3 +69,13 @@ module.exports = function(USER_TOTAL = 30, STORY_TOTAL = 50) {
 				});
 		});
 };
+
+
+const dropTables = function() {
+	return knex.schema.dropTableIfExists('stories')
+		.then(() => {
+			return knex.schema.dropTableIfExists('users');
+		});
+};
+
+module.exports = {seed, dropTables};

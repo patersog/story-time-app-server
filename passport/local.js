@@ -10,7 +10,6 @@ const localStrategy = new LocalStrategy((username, password, done) => {
 		.where({'username': username})
 		.then(result => {
 			user = result[0];
-			console.log(user);
 			if(!user) {
 				return Promise.reject({
 					reason: 'LoginError',
@@ -18,6 +17,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
 					location: 'username'
 				});
 			}
+			console.log(password, user.password);
 			return validatePassword(password, user.password);
 		})
 		.then( valid => {
