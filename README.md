@@ -53,23 +53,15 @@ Entry point for the application is server.js, and configuration in config.js
 
 ### DashBoard
 
-[dashboard view](./img/home.png)
+[dashboard view](https://www.flickr.com/photos/143447958@N07/42207070020/in/dateposted-public/)
 
-### Registration
+### Login
 
-[register view](./img/register.png)
-
-### DashBoard - Authorized
-
-[dashboard-auth view](./img/home-auth.png)
+[register view](https://www.flickr.com/photos/143447958@N07/30147810588/in/dateposted-public/)
 
 ### Story
 
-[story view](./img/story.png)
-
-### Submit - Authorized
-
-[submit/edit view](./img/submit.png)
+[story view](https://www.flickr.com/photos/143447958@N07/30147810588/in/dateposted-public/)
 
 ## Task List
 
@@ -78,18 +70,15 @@ Entry point for the application is server.js, and configuration in config.js
 - [x] JWT secure login
 - [x] All users can view any story
 - [x] Authorized users can post and edit stories
-
-### In Development
-
-- [ ] Have the client follow accesibility standards
-- [ ] User can add comments to a story
-- [ ] Filter Stories by genre
-- [ ] Text Search by "likeness"
+- [x] Have the client follow accesibility standards
+- [x] Rigourous testing of Client and Server
 
 ### Planned
 
 - [ ] Story Pagination
-- [ ] Rigourous testing of Client and Server
+- [ ] User can add comments to a story
+- [ ] Filter Stories by genre
+- [ ] Text Search by "likeness"
 
 #### Other Tasks
 

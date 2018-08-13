@@ -96,7 +96,7 @@ describe('END-POINT /api/auth', () => {
 				});
 		});
 
-		it.only('should return a json web token when given valid user credentials', () => {
+		it('should return a json web token when given valid user credentials', () => {
 			return chai.request(app)
 				.post('/api/auth/refresh')
 				.send(user)
