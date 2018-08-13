@@ -32,7 +32,7 @@ On the [Server](https://github.com/patersog/story-time-app-server)
 
 [jsonwebtokens](https://github.com/auth0/node-jsonwebtoken)
 
-Corresponding  can package.json files provide more detail
+Corresponding package.json files provide more detail
 
 ## Code
 
@@ -53,15 +53,15 @@ Entry point for the application is server.js, and configuration in config.js
 
 ### DashBoard
 
-[dashboard view](https://www.flickr.com/photos/143447958@N07/42207070020/in/dateposted-public/)
+![dashboard view](https://c1.staticflickr.com/2/1813/42207070020_c72b4a6a29_b.jpg)
 
 ### Login
 
-[register view](https://www.flickr.com/photos/143447958@N07/30147810588/in/dateposted-public/)
+![login view](https://c1.staticflickr.com/2/1777/30147810588_518b1b58c3_b.jpg)
 
 ### Story
 
-[story view](https://www.flickr.com/photos/143447958@N07/30147810588/in/dateposted-public/)
+![story view](https://c1.staticflickr.com/2/1798/42207069790_32d6d41aea_b.jpg)
 
 ## Task List
 
@@ -82,10 +82,10 @@ Entry point for the application is server.js, and configuration in config.js
 
 #### Other Tasks
 
-- [ ] Add CDCI (Travis)
+- [ ] Add CDCI
 
 ### Deployment
 
-[Storytime](https://loving-aryabhata-422d0b.netlify.com/)
+[Storytime](https://confused-texture.surge.sh/)
 
-Deployed with [netlify](https://www.netlify.com/) and [heroku](https://github.com/heroku);
+Deployed with [surge](https://surge.sh/) and [heroku](https://github.com/heroku);
